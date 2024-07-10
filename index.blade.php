@@ -15,7 +15,8 @@
       border-collapse: collapse;
     }
 
-    #players th, #players td {
+    #players th,
+    #players td {
       border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
@@ -29,6 +30,13 @@
       background-color: #f2f2f2;
     }
   </style>
+  <script>
+    function confirmDeletion(playerId) {
+      if (confirm('この選手を削除しますか？')) {
+        document.getElementById('delete-form-' + playerId).submit();
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -60,6 +68,14 @@
         <td>{{ $player->height }}</td>
         <td>{{ $player->weight }}</td>
         <td><a href="/player/{{ $player->id }}"><button>詳細</button></a></td>
+        <td><a href="{{ route('player.edit', ['id' => $player->id]) }}" class="btn btn-primary">編集</a></td>
+        <td>
+          <form action="{{ route('player.delete', ['id' => $player->id]) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger" onclick="return confirm('この選手を削除しますか？')">削除</button>
+          </form>
+        </td>
       </tr>
       @endforeach
     </table>

@@ -3,32 +3,92 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Player;
+use App\Models\Country;
 
 class PlayerController extends Controller
 {
-        // 選手一覧データを取得
-        public function showPlayer()
-        {
-            $playerTable = new Player;
-            $play = $playerTable->allPlayer();
-            return $play;
-        }
-    
-    // 選手一覧画面を表示
-        public function index()
-        {
-            $players = $this->showPlayer();
-            return view('players.index', ['players' => $players]);
-        }
-    
-        // 選手詳細を表示
-        public function detail($id)
-        {
-            
-            $player = Player::find($id);
-            return view('players.detail', ['player' => $player]);
-        }
+    public function index()
+    {
+        $players = Player::allPlayers();
+        return view('players.index', ['players' => $players]);
     }
+
+    public function detail($id)
+    {
+        $player = Player::with(['goals.pairing.enemyCountry'])->find($id);
+
+        if (!$player) {
+            return redirect()->route('player.index')->with('error', '選手が見つかりません。');
+        }
+
+        $totalGoals = $player->goals->count();
+
+        $goalDetails = $player->goals->map(function ($goal) {
+            return [
+                'goal_time' => $goal->goal_time,
+                'kickoff' => $goal->pairing->kickoff,
+                'enemy_country_name' => $goal->pairing->enemyCountry->name,
+            ];
+        });
+
+        return view('players.detail', [
+            'player' => $player,
+            'totalGoals' => $totalGoals,
+            'goalDetails' => $goalDetails,
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $player = Player::find($id);
+
+        if (!$player) {
+            return redirect()->route('player.index')->with('error', '選手が見つかりません。');
+        }
+
+        // 論理削除
+        $player->del_flg = 1;
+        $player->save();
+
+        return redirect()->route('player.index')->with('success', '選手が削除されました。');
+    }
+
+    public function edit($id)
+    {
+        $player = Player::findOrFail($id);
+        $countries = Country::all();
+        $positions = ['GK', 'DF', 'MF', 'FW'];
+
+        return view('players.edit', compact('player', 'countries', 'positions'));
+    }
+
+    public function update(Request $request, $id)
+    {
+    
+        $validatedData = $request->validate([
+            'uniform_num' => 'required|integer|numeric',
+            'position' => 'required|string',
+            'name' => 'required|string',
+            'country_id' => 'required|integer|exists:countries,id',
+            'club' => 'required|string',
+            'birth' => 'required|date_format:Y-m-d',
+            'height' => 'required|integer|numeric',
+            'weight' => 'required|integer|numeric',
+        ], [
+            'required' => 'この項目は必須入力です',
+            'integer' => 'この項目は半角数字で入力してください',
+            'numeric' => 'この項目は半角数字で入力してください',
+            'date_format' => 'この項目は「YYYY-MM-DD」で入力してください',
+        ]);
+
+    
+        $player = Player::findOrFail($id);
+        $player->update($validatedData);
+
+        return redirect()->route('player.edit', $id)->with('success', '選手情報が更新されました。');
+    }
+}
+
+
 

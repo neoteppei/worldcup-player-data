@@ -34,6 +34,10 @@
         <td>{{$player -> name}}</td>
       </tr>
       <tr>
+        <th>国</th>
+        <td>{{ $player -> country_name}}</td>
+      </tr>
+      <tr>
         <th>所属</th>
         <td>{{$player -> club}}</td>
       </tr>
@@ -50,6 +54,20 @@
         <td>{{$player -> weight}}</td>
       </tr>
     </table>
+
+    <h2>総得点</h2>
+    <p>{{ $totalGoals }} 点</p>
+
+    <h2>得点履歴</h2>
+    @if($goalDetails->isEmpty())
+    <p>無得点です</p>
+    @else
+    <ul>
+      @foreach($goalDetails as $detail)
+      <li>{{ $detail['kickoff'] }} 開始 {{ $detail['enemy_country_name'] }}戦 {{ $detail['goal_time'] }}:{{ $loop->iteration }}点目</li>
+      @endforeach
+    </ul>
+    @endif
   </div>
   <div id="re">
     <a href="/" class="return"><button>戻る</button></a>
