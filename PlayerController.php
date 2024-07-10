@@ -10,13 +10,13 @@ class PlayerController extends Controller
 {
     public function index()
     {
-        $players = Player::allPlayers();
+        $players = Player::active()->paginate(20);
         return view('players.index', ['players' => $players]);
     }
 
     public function detail($id)
     {
-        $player = Player::with(['goals.pairing.enemyCountry'])->find($id);
+        $player = Player::with(['goals.pairing.enemyCountry'])->where('del_flg', 0)->find($id);
 
         if (!$player) {
             return redirect()->route('player.index')->with('error', '選手が見つかりません。');
@@ -56,7 +56,7 @@ class PlayerController extends Controller
 
     public function edit($id)
     {
-        $player = Player::findOrFail($id);
+        $player = Player::where('del_flg', 0)->findOrFail($id);
         $countries = Country::all();
         $positions = ['GK', 'DF', 'MF', 'FW'];
 
@@ -65,7 +65,6 @@ class PlayerController extends Controller
 
     public function update(Request $request, $id)
     {
-    
         $validatedData = $request->validate([
             'uniform_num' => 'required|integer|numeric',
             'position' => 'required|string',
@@ -82,13 +81,11 @@ class PlayerController extends Controller
             'date_format' => 'この項目は「YYYY-MM-DD」で入力してください',
         ]);
 
-    
-        $player = Player::findOrFail($id);
+        $player = Player::where('del_flg', 0)->findOrFail($id);
         $player->update($validatedData);
 
         return redirect()->route('player.edit', $id)->with('success', '選手情報が更新されました。');
     }
 }
-
 
 
