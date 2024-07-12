@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 
 use App\Http\Controllers\PlayerController;
@@ -17,23 +16,3 @@ Route::delete('/player/delete/{id}', [PlayerController::class, 'delete'])->name(
 
 Route::get('/players/{id}/edit', [PlayerController::class, 'edit'])->name('player.edit');
 Route::put('/players/{id}', [PlayerController::class, 'update'])->name('player.update');
-=======
-<?php
-
-use App\Http\Controllers\PlayerController;
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('players/index');
-});
-// 選手一覧を表示
-Route::get('/', [PlayerController::class, 'index'])->name('player.index');
-
-// 選手詳細表示
-Route::get('/player/{id}', [PlayerController::class, 'detail'])->name('show');
-
-Route::delete('/player/delete/{id}', [PlayerController::class, 'delete'])->name('player.delete');
-
-Route::get('/players/{id}/edit', [PlayerController::class, 'edit'])->name('player.edit');
-Route::put('/players/{id}', [PlayerController::class, 'update'])->name('player.update');
->>>>>>> 04a1a7bf2af2daf13de46401cdf7ccb53c151cf2
