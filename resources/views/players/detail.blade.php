@@ -35,7 +35,7 @@
       </tr>
       <tr>
         <th>国</th>
-        <td>{{ $player -> country_name}}</td>
+        <td>{{ $player->country->name }}</td>
       </tr>
       <tr>
         <th>所属</th>

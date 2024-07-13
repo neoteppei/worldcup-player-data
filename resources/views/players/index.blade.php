@@ -5,11 +5,10 @@
   <meta charset="UTF-8">
   <title>選手一覧</title>
   <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
-  <!-- CSSファイルのリンクを追加 -->
+
 
   <style>
-    /* ここに直接CSSスタイルを追加することもできます */
-    /* 例: テーブルのスタイル */
+    
     #players {
       width: 100%;
       border-collapse: collapse;
@@ -29,6 +28,60 @@
     #players tr:nth-child(even) {
       background-color: #f2f2f2;
     }
+
+    .pagination-container {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination .page-item {
+    margin: 0 0.25rem;
+}
+
+.pagination .page-item .page-link {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.pagination .page-item:first-child {
+    margin-right: auto;
+}
+
+.pagination .page-item:last-child {
+    margin-left: auto;
+}
+
   </style>
   <script>
     function confirmDeletion(playerId) {
@@ -63,7 +116,7 @@
         <td>{{ $player->position }}</td>
         <td>{{ $player->club }}</td>
         <td>{{ $player->name }}</td>
-        <td>{{ $player->country_name }}</td>
+        <td>{{ $player->country->name }}</td>
         <td>{{ $player->birth }}</td>
         <td>{{ $player->height }}</td>
         <td>{{ $player->weight }}</td>
@@ -80,7 +133,11 @@
       @endforeach
     </table>
   </div>
-  {{ $players->appends(request()->query())->links() }}
+  <div class="pagination-container">
+  {{ $players->links() }}
+  </div>
+
+  
 </body>
 
 </html>

@@ -102,5 +102,6 @@
         </div>
 
         <button type="submit" class="btn btn-primary">編集</button>
+        <a href="{{ route('player.index') }}" class="btn btn-secondary">戻る</a>
     </form>
 @endsection
