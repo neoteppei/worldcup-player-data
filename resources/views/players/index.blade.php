@@ -131,10 +131,12 @@
         </td>
       </tr>
       @endforeach
+
+      
     </table>
   </div>
   <div class="pagination-container">
-  {{ $players->links() }}
+  {{ $players->links('vendor.pagination.bootstrap-4') }}
   </div>
 
   
