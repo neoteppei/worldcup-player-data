@@ -95,6 +95,6 @@ class PlayerController extends Controller
 
     $player->save(); 
 
-    return redirect()->route('player.edit', $id)->with('success', '選手情報が更新されました。');
+    return redirect()->route('player.index')->with('success', '選手情報が更新されました。');
 }
 }
