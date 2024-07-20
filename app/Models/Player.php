@@ -49,4 +49,17 @@ class Player extends Model
             ->where('p.del_flg', 0)
             ->paginate(20);
     }
+<<<<<<< HEAD
+=======
+
+    public function goals()
+    {
+        return $this->hasMany(Goal::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+>>>>>>> c40d8a221f67fec75c807dc2bd7cd2b220dc658a
 }
