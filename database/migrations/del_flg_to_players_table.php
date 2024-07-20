@@ -8,23 +8,29 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('players', function (Blueprint $table) {
-            $table->integer('del_flg')->default(0)->comment('0:表示, 1:非表示');
-            //
+            if (!Schema::hasColumn('players', 'del_flg')) {
+                $table->integer('del_flg')->default(0)->comment('0:表示, 1:非表示');
+            }
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('players', function (Blueprint $table) {
-            $table->dropColumn('del_flg');
-            //
+            if (Schema::hasColumn('players', 'del_flg')) {
+                $table->dropColumn('del_flg');
+            }
         });
     }
 };

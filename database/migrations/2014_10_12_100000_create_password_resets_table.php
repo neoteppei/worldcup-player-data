@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTimestampsToPlayersTable20240713Custom extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddTimestampsToPlayersTable20240713Custom extends Migration
      */
     public function up()
     {
-        Schema::table('players', function (Blueprint $table) {
-            $table->timestamps(); // created_at と updated_at カラムを追加
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
     }
 
@@ -25,8 +27,6 @@ class AddTimestampsToPlayersTable20240713Custom extends Migration
      */
     public function down()
     {
-        Schema::table('players', function (Blueprint $table) {
-            $table->dropTimestamps(); // created_at と updated_at カラムを削除
-        });
+        Schema::dropIfExists('password_resets');
     }
 };
