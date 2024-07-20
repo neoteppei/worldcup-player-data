@@ -73,6 +73,11 @@
         .pagination .page-item:last-child {
             margin-left: auto;
         }
+
+        .logout{
+            display: flex;
+            justify-content: flex-end;
+        }
     </style>
     <script>
         function confirmDeletion(playerId) {
@@ -86,6 +91,10 @@
 <body>
     <h1>選手一覧画面</h1>
     <h2>■選手データ</h2>
+    <div class="logout">
+        <a href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
+    </div>        
     <div id="playerlist">
         <table id="players">
             <tr>
@@ -134,8 +143,7 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
-        <a href="{{ route('logout') }}"
-            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
+       
     </div>
 </body>
 
