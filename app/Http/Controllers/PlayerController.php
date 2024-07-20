@@ -5,12 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Player;
 use App\Models\Country;
+use Illuminate\Support\Facades\Auth;
 
 class PlayerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        $players = Player::allPlayers();
+        $user = Auth::user();
+
+        if ($user->role == 1) { // 一般ユーザー
+            $players = Player::where('country_id', $user->country_id)->where('del_flg', 0)->paginate(20);
+        } else { // 管理ユーザー
+            $players = Player::where('del_flg', 0)->paginate(20);
+        }
+
         return view('players.index', ['players' => $players]);
     }
 
@@ -64,37 +77,36 @@ class PlayerController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validatedData = $request->validate([
-        'uniform_num' => 'required|integer|numeric',
-        'position' => 'required|string',
-        'name' => 'required|string',
-        'country_id' => 'required|integer|exists:countries,id',
-        'club' => 'required|string',
-        'birth' => 'required|date_format:Y-m-d',
-        'height' => 'required|integer|numeric',
-        'weight' => 'required|integer|numeric',
-    ], [
-        'required' => 'この項目は必須入力です',
-        'integer' => 'この項目は半角数字で入力してください',
-        'numeric' => 'この項目は半角数字で入力してください',
-        'date_format' => 'この項目は「YYYY-MM-DD」で入力してください',
-    ]);
+    {
+        $validatedData = $request->validate([
+            'uniform_num' => 'required|integer|numeric',
+            'position' => 'required|string',
+            'name' => 'required|string',
+            'country_id' => 'required|integer|exists:countries,id',
+            'club' => 'required|string',
+            'birth' => 'required|date_format:Y-m-d',
+            'height' => 'required|integer|numeric',
+            'weight' => 'required|integer|numeric',
+        ], [
+            'required' => 'この項目は必須入力です',
+            'integer' => 'この項目は半角数字で入力してください',
+            'numeric' => 'この項目は半角数字で入力してください',
+            'date_format' => 'この項目は「YYYY-MM-DD」で入力してください',
+        ]);
 
-    $player = Player::where('del_flg', 0)->findOrFail($id);
+        $player = Player::where('del_flg', 0)->findOrFail($id);
 
+        $player->uniform_num = $validatedData['uniform_num'];
+        $player->position = $validatedData['position'];
+        $player->name = $validatedData['name'];
+        $player->country_id = $validatedData['country_id'];
+        $player->club = $validatedData['club'];
+        $player->birth = $validatedData['birth'];
+        $player->height = $validatedData['height'];
+        $player->weight = $validatedData['weight'];
 
-    $player->uniform_num = $validatedData['uniform_num'];
-    $player->position = $validatedData['position'];
-    $player->name = $validatedData['name'];
-    $player->country_id = $validatedData['country_id'];
-    $player->club = $validatedData['club'];
-    $player->birth = $validatedData['birth'];
-    $player->height = $validatedData['height'];
-    $player->weight = $validatedData['weight'];
+        $player->save();
 
-    $player->save(); 
-
-    return redirect()->route('player.index')->with('success', '選手情報が更新されました。');
-}
+        return redirect()->route('player.index')->with('success', '選手情報が更新されました。');
+    }
 }
